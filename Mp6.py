@@ -3,14 +3,22 @@ import os.path
 from os.path import exists
 import json
 
-dirPath = "C:/Mp6/Projects"
+#VARIABLES---------------------------------------------------------------------------------
+#----- Folder Directories -----#
+dirPath = "C:/Mp6/Projects" 
 projectPath = "C:/Mp6/Projects/Current Projects.txt"
+#----- Text File Directories -----#
 allProjects = "C:/Mp6/Projects/All Projects.txt"
 completedProjects = "C:/Mp6/Projects/Completed Projects.txt"
-
-
+#----- Lists -----#
+temp = []
 projects = []
 
+
+
+a = 0
+
+#METHODS---------------------------------------------------------------------------------
 def sep_line():
     '''Printing Dashes'''
     return "-----------------"
@@ -30,7 +38,6 @@ def input_project():
     #Dump List Contents into a file
     try:
         file = open(projectPath, "x")
-        file.close()
     except FileExistsError:
         file = open(projectPath, 'w')
         for data in projects:
@@ -39,10 +46,7 @@ def input_project():
             file.write(str(data['SIZE'])+"\n")
             file.write(str(data['PRIORITY'])+"\n")
             file.write(str("\n"))
-
-
-
-
+        file.close()
     print("Project", title, "successfully added.")
     print(projects)
 
@@ -63,8 +67,13 @@ def view_project():
         print("choice B")
     elif viewchoice == 'c':
         print("choice c")
+#-----------------------------------------------------------
 
-#------------ RUN EVERYTIME THE PROGRAM LAUNCHES ---------------
+
+
+
+
+#------------ FETCH DATA FROM FILE TO MEMORY ---------------
 #Check if the directory Exists
 folderCheck = os.path.isdir(dirPath)
 try:
@@ -75,12 +84,48 @@ try:
         #If file exists, check for contents
         print("Folder Exists")
         file = open(projectPath, "r")
-        file.read
+        for x in file:
+            if x != "\n":
+                y = x.strip()
+                temp.append(y)      
+
+        while bool(temp):
+            #Attempting to add the file contents to the memory
+            a = 0
+            try:
+                projects.append({'ID NUMBER':int(temp[0]),
+                                'TITLE': temp[1],
+                                'SIZE': int(temp[2]),
+                                'PRIORITY': int(temp[3])})
+            except IndexError:
+                print("Temp Folder Empty")
+                break
+            except ValueError:
+                print("A Saved Data is corrupted and cannot be loaded. Did you edit it outside the program?")
+
+            #Removing the temporary list and adding everything to the project folder
+            while a != 4: 
+                try:
+                    temp.pop(0)
+                except:
+                    print('Nothing to pop!')
+                a+=1
+        print(projects)
+        file.close()
+
+        #Attempt to fetch data from completed projects
+
+        #Attempt to fetch data from scheduled projects
+
+
+
+
 except FileNotFoundError:
-    mkdir("C:/Mp6/")
+    try:
+        mkdir("C:/Mp6")
+    except FileExistsError:
+        pass
     print("File MP6 and CreateProject Created")
-
-
 
 #----------------------------------------------------------------
 
